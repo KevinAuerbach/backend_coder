@@ -6,12 +6,12 @@ class ProductManager {
     addProduct (title, description, price, thumbnail, code, stock) {
         let max = 0
         this.products.forEach((product) => {
-            max = product.id > max && product.id
+            product.id > max ? product.id : max 
         })
         let id = max + 1
 
         const newProduct = {id, title, description, price, thumbnail, code, stock}
-        let productFound = this.products.find((product) => product.code)
+        let productFound = this.products.find((product) => product.code === code)
         if(productFound) {
             console.log("A product with that code already exists")
         }else {
@@ -28,7 +28,7 @@ class ProductManager {
         let idFound = this.products.find((product) => product.id == id)
         
         if(idFound) {
-            console.log(idFound)
+            console.log({msg: "Product Found!", data: idFound})
         }else {
             console.log("Product not found!")
         }
