@@ -1,0 +1,12 @@
+[
+  {"id": "1", "title": "coca-cola", "description": "gaseosa 500ml", "price": "350", "thumbnail": "sin imagen", "code": "abc", "stock": "35"},
+  {"id": "2", "title": "coca-cola light", "description": "gaseosa light 500ml", "price": "350", "thumbnail": "sin imagen", "code": "abc1", "stock": "30"},
+  {"id": "3", "title": "sprite", "description": "gaseosa 500ml", "price": "300", "thumbnail": "sin imagen", "code": "abc2", "stock": "43"},
+  {"id": "4", "title": "fernet branca", "description": "fernet 750ml", "price": "2000", "thumbnail": "sin imagen", "code": "abc4", "stock": "15"},
+  {"id": "5", "title": "smirnoff", "description": "vodka 1l", "price": "2500", "thumbnail": "sin imagen", "code": "abc8", "stock": "9"},
+  {"id": "6", "title": "villa del sur", "description": "agua mineral 1.5l", "price": "600", "thumbnail": "sin imagen", "code": "sj38", "stock": "55"},
+  {"id": "7", "title": "red bull", "description": "energizante 250ml", "price": "800", "thumbnail": "sin imagen", "code": "sd2", "stock": "23"},
+  {"id": "8", "title": "speed", "description": "energizante 600ml", "price": "800", "thumbnail": "sin imagen", "code": "ksj2", "stock": "33"},
+  {"id": "9", "title": "quilmes", "description": "cerveza lata 450ml", "price": "700", "thumbnail": "sin imagen", "code": "ysh23", "stock": "25"},
+  {"id": "10", "title": "manaos", "description": "gaseosa cola 2l", "price": "600", "thumbnail": "sin imagen", "code": "ksi23", "stock": "18"}
+]

@@ -1,6 +1,6 @@
-const fs = require("fs")
+import fs from "fs"
 
-class ProductManager {
+export class ProductManager {
     constructor(path) {
         this.path = path
         this.products = []
@@ -15,15 +15,19 @@ class ProductManager {
                 max = product.id > max && product.id
             })
             let id = max + 1
-        
-            const newProduct = {id, title, description, price, thumbnail, code, stock}
-            let productFound = this.products.find((product) => product.code === code)
-            if(productFound) {
-                console.log("A product with that code already exists")
-            }else {
-                this.products.push(newProduct) 
-                await fs.promises.writeFile(this.path, JSON.stringify(this.products))
+            if(!title||!description||!price||!thumbnail||!code||!stock) {
+                console.log("Complete all fields!")
+            } else {
+                const newProduct = {id, title, description, price, thumbnail, code, stock}
+                let productFound = this.products.find((product) => product.code === code)
+                if(productFound) {
+                    console.log("A product with that code already exists")
+                }else {
+                    this.products.push(newProduct) 
+                    await fs.promises.writeFile(this.path, JSON.stringify(this.products))
             } 
+            }
+            
         }catch(error) {
             console.log(error)
         }      
@@ -33,10 +37,14 @@ class ProductManager {
         try {
             if (!fs.existsSync(this.path)) {
                 await fs.promises.writeFile(this.path, JSON.stringify(this.products));
-            }
-             this.products = JSON.parse(await fs.promises.readFile(this.path, 'utf-8'))
-             console.log(this.products)
-             return this.products   
+            } else {
+                let data = await fs.promises.readFile(this.path, 'utf-8')
+                if (data) {
+                    this.products = JSON.parse(data)
+                }
+            }   
+            console.log(this.products)
+            return this.products 
         }
         catch(error) {
             console.log(error)
@@ -103,22 +111,12 @@ class ProductManager {
 }
 
 
-    let kevin = new ProductManager('products.json')
-    kevin.getProducts()
-    kevin.addProduct("producto prueba", "este es un producto prueba", 200, "sin imagen", "abc123", 25)
-    kevin.getProducts()
-    kevin.getProductById(1)
-    kevin.updateProduct(1, "producto prueba updateado", "este es un producto prueba updateado", 500, "sin imagen", "abc", 10)
-    kevin.deleteProduct(1) 
+
+
     
     
     
-    
-    /* kevin.addProduct("otro producto prueba", "este es un producto prueba", 600, "sin imagen", "abc567", 25)
-    kevin.addProduct("tercer producto prueba", "este es un producto prueba", 500, "sin imagen", "as56", 25) 
-    kevin.getProducts()
-    
-    kevin.addProduct("otro producto mas", "este es un producto prueba", 200, "sin imagen", "a12", 20) */
+
     
 
     
