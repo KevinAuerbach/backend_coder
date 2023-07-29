@@ -1,115 +1,111 @@
-import fs from "fs"
+import fs from "fs";
 
-export class ProductManager {
-    constructor(path) {
-        this.path = path
-        this.products = []
-        }
-
-   
-
-    async addProduct (title, description, price, thumbnail, code, stock) {
-        try {
-            let max = 0
-            this.products.forEach((product) => {
-                max = product.id > max && product.id
-            })
-            let id = max + 1
-            if(!title||!description||!price||!thumbnail||!code||!stock) {
-                console.log("Complete all fields!")
-            } else {
-                const newProduct = {id, title, description, price, thumbnail, code, stock}
-                let productFound = this.products.find((product) => product.code === code)
-                if(productFound) {
-                    console.log("A product with that code already exists")
-                }else {
-                    this.products.push(newProduct) 
-                    await fs.promises.writeFile(this.path, JSON.stringify(this.products))
-            } 
-            }
-            
-        }catch(error) {
-            console.log(error)
-        }      
+class ProductManager {
+    constructor() {
+        this.products = [];
+        this.path = "Products.json";
+        this.createFile();
     }
-    
-    async getProducts () {
-        try {
-            if (!fs.existsSync(this.path)) {
-                await fs.promises.writeFile(this.path, JSON.stringify(this.products));
-            } else {
-                let data = await fs.promises.readFile(this.path, 'utf-8')
-                if (data) {
-                    this.products = JSON.parse(data)
-                }
-            }   
-            console.log(this.products)
-            return this.products 
-        }
-        catch(error) {
-            console.log(error)
+
+    createFile() {
+        if (!fs.existsSync(this.path)) {
+            fs.writeFileSync(this.path, JSON.stringify(this.products));
         }
     }
 
-    async getProductById (id) {
-        try {
-            let data = await this.getProducts()
-            let idFound = data.find((product) => product.id == id)
-        
-            if(idFound) {
-                console.log({msg: "Product Found!", product: idFound})
-                return idFound
-            }else {
-                console.log("Product not found!")
-            }
-        }
-        catch(error) {
-            console.log(error)
+    addProduct(product) {
+        if (this.validateCode(product.code)) {
+            console.log("Error! Code exists!");
+
+            return false;
+        } else {
+            const producto = {id:this.generateId(), title:product.title, description:product.description, code:product.code, price:product.price, status:product.status, stock:product.stock, category:product.category, thumbnails:product.thumbnails};
+            this.products = this.getProducts();
+            this.products.push(producto);
+            this.saveProducts();
+            console.log("Product added!");
+
+            return true;
         }
     }
 
-    async deleteProduct (id) {
-        try {
-            this.products = await this.getProducts()
-            let pos = this.products.findIndex(product => product.id === id)
+    updateProduct(id, product) {
+        this.products = this.getProducts();
+        let pos = this.products.findIndex(item => item.id === id);
 
-            if(pos > -1) {
-                this.products.splice(pos, 1)
-                await fs.promises.writeFile(this.path, JSON.stringify(this.products))
-                console.log("Product deleted!")
-            } else {
-                console.log("Product not found!")
-            }
-        } 
-        catch(error) {
-            console.log(error)
+        if (pos > -1) {
+            this.products[pos].title = product.title;
+            this.products[pos].description = product.description;
+            this.products[pos].code = product.code;
+            this.products[pos].price = product.price;
+            this.products[pos].status = product.status;
+            this.products[pos].stock = product.stock;
+            this.products[pos].category = product.category;
+            this.products[pos].thumbnails = product.thumbnails;
+            this.saveProducts();
+            console.log("Product updated!");
+
+            return true;
+        } else {
+            console.log("Not found!");
+
+            return false;
         }
     }
 
-    async updateProduct (id, title, description, price, thumbnail, code, stock) {
-        try {
-            this.products = await this.getProducts()
-            let pos = this.products.findIndex(product => product.id === id)
+    deleteProduct(id) {
+        this.products = this.getProducts();
+        let pos = this.products.findIndex(item => item.id === id);
 
-            if(pos > -1) {
-                this.products[pos].title = title
-                this.products[pos].description = description
-                this.products[pos].price = price
-                this.products[pos].thumbnail = thumbnail
-                this.products[pos].code = code
-                this.products[pos].stock = stock
-                await fs.promises.writeFile(this.path, JSON.stringify(this.products))
-                console.log("Product updated!")
-            } else {
-                console.log("Product not found!")
+        if (pos > -1) {
+            this.products.splice(pos, 1); (0,1)
+            this.saveProducts();
+            console.log("Product #" + id + " deleted!");
+
+            return true;
+        } else {
+            console.log("Not found!");
+
+            return false;
+        }
+    }
+
+    getProducts() {
+        let products = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+
+        return products;
+    }
+
+    getProductById(id) {
+        this.products = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+
+        return this.products.find(item => item.id === id) || "Not found";
+    }
+
+    validateCode(code) {
+        return this.products.some(item => item.code === code);
+    }
+
+    generateId() {
+        let max = 0;
+        let products = this.getProducts();
+
+        products.forEach(item => {
+            if (item.id > max) {
+                max = item.id;
             }
-        }
-        catch(error) {
-            console.log(error)
-        }
+        });
+
+        return max+1;
+    }
+
+    saveProducts() {
+        fs.writeFileSync(this.path, JSON.stringify(this.products));
     }
 }
 
+
+export default ProductManager;
 
 
 
