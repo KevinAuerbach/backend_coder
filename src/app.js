@@ -4,6 +4,7 @@ import cartRouter from './routes/cart.router.js'
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js'
 import viewsRouter from './routes/views.router.js'
+import { Server } from 'socket.io'
 
 const puerto = 8080
 const app = express()
@@ -11,6 +12,19 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
+const httpServer = app.listen(puerto, () => {
+    console.log("Servidor escuchando en puerto " + puerto);
+  });
+
+const socketServer = new Server(httpServer);
+
+socketServer.on('connection', (socket) => {
+    console.log("Nueva Conexion!")
+
+    socket.on('message', (data) => {
+        console.log(data)
+    })
+})
 
 app.use("/api/products/", productsRouter)
 app.use("/api/cart/", cartRouter)
@@ -25,9 +39,7 @@ app.use(express.static(__dirname + '/public'))
 
 
 
-app.listen(puerto, () => {
-    console.log(`Server listening on PORT:${puerto}`)
-})
+
 
 
 
