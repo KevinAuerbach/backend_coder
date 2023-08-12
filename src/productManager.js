@@ -97,6 +97,7 @@ class ProductManager {
         });
 
         return max+1;
+        
     }
 
     saveProducts() {
@@ -105,11 +106,8 @@ class ProductManager {
 }
 
 
+
 export default ProductManager;
-
-
-
-    
     
     
 

@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Productos</title>
-</head>
-<body>
-  <h1>Lista de Productos</h1>
-  <ul>
-    {{#each products}}
-      <li>Nombre: {{title}} - Stock: {{stock}} - Descripción: {{description}}</li>
-    {{/each}}
-  </ul>
-</body>
-</html>
+<div class="container">
+    <div class="row">
+        {{#each products}}
+            <div class="col-md-4">
+                <div class="card border-0 mb-3">
+                    <img src="{{this.thumbnails}}" class="img-fluid" alt="{{this.title}}">
+                    <div class="card-body text-center">
+                        <p class="card-text">{{this.title}}<br><span class="text-danger">${{this.price}}</span></p>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+
+
