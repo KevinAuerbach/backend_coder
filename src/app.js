@@ -3,10 +3,12 @@ import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
 import viewsRouter from "./routes/views.router.js";
 import {Server} from "socket.io";
-import ProductManager from "./ProductManager.js";
+import ProductManager from "../dao/ProductManager.js";
+import ChatManager from "../dao/ChatManager.js";
+import mongoose from "mongoose";
 
 import productsRouter from "./routes/products.router.js";
-import cartsRouter from "./routes/cart.router.js";
+import cartsRouter from "./routes/carts.router.js";
 
 const app = express();
 const puerto = 8080;
@@ -16,6 +18,7 @@ const httpServer = app.listen(puerto, () => {
 
 const socketServer = new Server(httpServer);
 const PM = new ProductManager();
+const CM = new ChatManager();
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
@@ -26,6 +29,8 @@ app.use(express.urlencoded({extended:true}));
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/", viewsRouter);
+
+mongoose.connect("mongodb+srv://auerbachkevin:boxhead123@coderbackend.jp9ng7g.mongodb.net/?retryWrites=true&w=majority");
 
 socketServer.on("connection", (socket) => {
     console.log("Nueva Conexión!");
@@ -44,6 +49,12 @@ socketServer.on("connection", (socket) => {
         PM.deleteProduct(parseInt(data));
         const products = PM.getProducts();
         socket.emit("realTimeProducts", products);
+    });
+
+    socket.on("newMessage", async (data) => {
+        CM.createMessage(data);
+        const messages = await CM.getMessages();
+        socket.emit("messages", messages);
     });
 });
 
